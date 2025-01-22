@@ -7,6 +7,8 @@ import aiosqlite
 import json
 import re
 from config import NINJA_TOKEN, WEATHER_TOKEN, CALORIE_TOKEN
+from matplotlib import pyplot as plt
+import numpy as np
 
 
 def extract_number(text):
@@ -15,6 +17,34 @@ def extract_number(text):
         return int(match.group(1))
     else:
         return None
+
+
+def generate_graph(calorie_goal, calories, water_goal, water):
+    # Код частично переписан отсюда: https://stackoverflow.com/questions/73331428/how-to-correctly-send-a-matplotlib-figure-figure-to-a-private-telegram-channel-o
+    groups = ("Вода", "Калории")
+    data = {
+        'Залогировано': (water, calories),
+        'Норма': (water_goal, calorie_goal),
+    }
+
+    x = np.arange(len(groups))  # the label locations
+    width = 0.25  # the width of the bars
+    multiplier = 0
+
+    fig, ax = plt.subplots(layout='constrained')
+
+    for attribute, measurement in data.items():
+        offset = width * multiplier
+        rects = ax.bar(x + offset, measurement, width, label=attribute)
+        ax.bar_label(rects, padding=3)
+        multiplier += 1
+
+    ax.set_ylabel('Количество (мл/ккал)')
+    ax.set_title('Ваша норма воды и калорий за день')
+    ax.set_xticks(x + width, groups)
+    ax.legend(loc='upper left', ncols=3)
+
+    plt.savefig('graph.jpg')
 
 
 async def get_weather(city: str):

@@ -1,5 +1,5 @@
 from aiogram import Router
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, FSInputFile
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from states import Form, WorkoutQuestion, FoodQuestion
@@ -261,7 +261,7 @@ async def check_progress(message: Message):
 
     calorie_count, water_count, training_calories, training_mins = await utils.get_progress_from_db(user_id)
 
-    await message.reply(f"За сегодня вы затрекали {calorie_count} калорий и {water_count} мл воды.")
+    await message.reply(f"За сегодня вы затрекали {int(calorie_count)} калорий и {int(water_count)} мл воды.")
 
     profile = await utils.get_profile_from_db(user_id)
 
@@ -289,6 +289,10 @@ async def check_progress(message: Message):
                     f"Базовая: {calorie_goal} ккал\n"
                     f"Из-за тренировок: + {training_calories} ккал \n"
                     f"Итого: {calorie_goal + training_calories} ккал\n")
+        
+        utils.generate_graph(water=int(water_count), water_goal=water_goal, calorie_goal=calorie_goal, calories=int(calorie_count))
+        
+        await message.answer_photo(photo=FSInputFile('graph.jpg', filename='Graph'), caption='')
 
 
 # Update calorie goal
