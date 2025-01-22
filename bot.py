@@ -1,6 +1,6 @@
 import asyncio
 from aiogram import Bot, Dispatcher
-from config import TOKEN
+from config import TG_TOKEN
 from handlers import setup_handlers
 from middlewares import LoggingMiddleware
 import aiosqlite
@@ -48,7 +48,7 @@ create_table_statements = [
 
 
 # Создаем экземпляры бота и диспетчера
-bot = Bot(token=TOKEN)
+bot = Bot(token=TG_TOKEN)
 dp = Dispatcher()
 
 # Настраиваем middleware и обработчики

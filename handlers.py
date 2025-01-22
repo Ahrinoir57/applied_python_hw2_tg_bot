@@ -69,8 +69,6 @@ async def finish_profile(message: Message, state: FSMContext):
     data = await state.get_data()
     package = {}
 
-    #TODO: Update profile if exists
-
     package['user_id'] = user_id
     package['city'] = data.get("city")
     try:

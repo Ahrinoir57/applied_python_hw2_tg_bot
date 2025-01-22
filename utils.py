@@ -6,6 +6,8 @@ from aiogram.fsm.context import FSMContext
 import aiosqlite
 import json
 import re
+from config import NINJA_TOKEN, WEATHER_TOKEN, CALORIE_TOKEN
+
 
 def extract_number(text):
     match = re.search(r'\b(\d+)\b', text)
@@ -16,9 +18,7 @@ def extract_number(text):
 
 
 async def get_weather(city: str):
-    with open('tokens.json') as f:
-        tokens = json.load(f)
-        api_key = tokens['open_weather']
+    api_key = WEATHER_TOKEN
 
     async with aiohttp.ClientSession() as session:
         async with session.get(f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric') as response:
@@ -33,9 +33,7 @@ async def get_weather(city: str):
 
 
 async def get_calories_per_workout(workout_type: str):
-    with open('tokens.json') as f:
-        tokens = json.load(f)
-        api_key = tokens['ninja']
+    api_key = NINJA_TOKEN
 
     api_url = 'https://api.api-ninjas.com/v1/caloriesburned?activity={}'.format(workout_type)
 
@@ -50,9 +48,7 @@ async def get_calories_per_workout(workout_type: str):
     
 
 async def get_calories_per_food(food: str):
-    with open('tokens.json') as f:
-        tokens = json.load(f)
-        api_key = tokens['calories']
+    api_key = CALORIE_TOKEN
 
     api_url = 'https://api.calorieninjas.com/v1/nutrition?query={}'.format(food)
 
